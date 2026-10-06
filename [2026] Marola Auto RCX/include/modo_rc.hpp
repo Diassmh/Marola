@@ -13,24 +13,23 @@
 
 #pragma endregion
 
-int zonaMorta = 20;               // Zona desconsiderada do controle de PS4
-volatile int r2 = 0;              // Valor do gatilho direito do PS4 (R2)
-volatile int l2 = 0;              // Valor do gatilho esquerdo do PS4 (L2)
-volatile int direcao = 0;         // Valor do direcional esquerdo do PS4 em X (LStickX)
-volatile bool velLimitada = true; // Switch definido pra limitar a velocidade do motor
-int limiteVelocidade = 140;       // Limite de velocidade do motor  160
+int zonaMorta = 20;                // Zona desconsiderada do controle de PS4
+volatile int r2 = 0;               // Valor do gatilho direito do PS4 (R2)
+volatile int l2 = 0;               // Valor do gatilho esquerdo do PS4 (L2)
+volatile int direcao = 0;          // Valor do direcional esquerdo do PS4 em X (LStickX)
+volatile bool velLimitada = false; // Switch definido pra limitar a velocidade do motor
+int limiteVelocidade = 255;        // Limite de velocidade do motor
 
 bool ativarMira = false;
+bool primeiroComando = true;    // Flag para abrir o servo no primeiro movimento
+bool estadoServoFechado = true; // Controla se o robô está fechado (95º) ou aberto (0º)
 
 float coefAtenuacao = 1.8; // Atenuacao da velocidade em curvas (deve ser FLOAT)
 float coefReverse = 0.9;   // Coeficiente para balancear a re (deve ser FLOAT)
-float limiteCurva = 110.0; // Velocidade limite em curvas puras (deve ser FLOAT)  120
+float limiteCurva = 200.0; // Velocidade limite em curvas puras (deve ser FLOAT)  120
 
-const char *BRIGA = "8c:94:df:58:87:0c";
-const char *RESSACA = "a4:f0:0f:68:e7:f0";
-const char *FUEGO = "d4:e9:f4:a4:9f:dc";
-const char *CAIPORA = "b8:d6:1a:5d:fb:b0";
-const char *TSUNAMI = "a0:b7:65:58:5d:24";
+const char *MAROLA = "30:76:f5:93:b0:30";
+const char *TESTE = "c8:85:41:2c:24:3c";
 
 void iniciarTodosAzuis()
 {
@@ -44,7 +43,7 @@ void setupRC()
 {
     iniciarTodosAzuis();
 
-    if (PS4.begin(BRIGA))
+    if (PS4.begin(MAROLA))
     {
         while (!PS4.isConnected())
         {
@@ -72,6 +71,19 @@ void loopRC()
             digitalWrite(led, HIGH);
             int velocidadeEsquerda = 0; // Velocidade do motor esquerdo
             int velocidadeDireita = 0;  // Velocidade do motor direito
+
+            // ======================= || FLAG PRIMEIRO COMANDO || =======================
+            if (primeiroComando)
+            {
+                // Se detetar QUALQUER botão de macro, gatilho, curva ou frentão
+                if (PS4.Cross() || PS4.L1() || PS4.R1() || PS4.Left() > 0 || PS4.Right() > 0 || PS4.Up() > 0 || r2 > zonaMorta || l2 > zonaMorta || abs(direcao) > zonaMorta)
+                {
+                    servoLaminas.write(0);
+                    estadoServoFechado = false;
+                    primeiroComando = false;
+                }
+            }
+
             // ======================= || COMANDOS COM BOTÕES (MACROS) || ===================
 
             if (PS4.Cross())
@@ -85,62 +97,76 @@ void loopRC()
             {
 
                 vTaskDelay(pdMS_TO_TICKS(10));
-                moverMotores(-255, -255);
-                vTaskDelay(pdMS_TO_TICKS(10));
-                moverMotores(0, -255);
-                vTaskDelay(pdMS_TO_TICKS(370));
+                moverMotores(-255, 255);
+                vTaskDelay(pdMS_TO_TICKS(100));
+                moverMotores(255, 255);
+                vTaskDelay(pdMS_TO_TICKS(200));
                 moverMotores(0, 0);
                 vTaskDelay(pdMS_TO_TICKS(10));
+                moverMotores(255, -255);
+                vTaskDelay(pdMS_TO_TICKS(110));
+                moverMotores(255, 255);
+                vTaskDelay(pdMS_TO_TICKS(100));
             }
 
             else if (PS4.R1())
             {
 
                 vTaskDelay(pdMS_TO_TICKS(10));
-                moverMotores(-255, -255);
-                vTaskDelay(pdMS_TO_TICKS(10));
-                moverMotores(-255, 0);
-                vTaskDelay(pdMS_TO_TICKS(370));
+                moverMotores(255, -255);
+                vTaskDelay(pdMS_TO_TICKS(100));
+                moverMotores(255, 255);
+                vTaskDelay(pdMS_TO_TICKS(200));
                 moverMotores(0, 0);
                 vTaskDelay(pdMS_TO_TICKS(10));
+                moverMotores(-255, 255);
+                vTaskDelay(pdMS_TO_TICKS(110));
+                moverMotores(255, 255);
+                vTaskDelay(pdMS_TO_TICKS(100));
             }
 
             else if (PS4.Left() > 0)
             {
                 moverMotores(-255, 255);
-                vTaskDelay(pdMS_TO_TICKS(50));
+                vTaskDelay(pdMS_TO_TICKS(40));
                 moverMotores(255, 255);
-                vTaskDelay(pdMS_TO_TICKS(100));
+                vTaskDelay(pdMS_TO_TICKS(155));
                 moverMotores(255, -255);
-                vTaskDelay(pdMS_TO_TICKS(90));
+                vTaskDelay(pdMS_TO_TICKS(190));
                 moverMotores(255, 255);
-                vTaskDelay(pdMS_TO_TICKS(50));
-                moverMotores(255, -255);
-                vTaskDelay(pdMS_TO_TICKS(50));
+                vTaskDelay(pdMS_TO_TICKS(170));
                 moverMotores(0, 0);
-                vTaskDelay(pdMS_TO_TICKS(10));
+                vTaskDelay(pdMS_TO_TICKS(15));
             }
             else if (PS4.Right() > 0)
             {
-                vTaskDelay(pdMS_TO_TICKS(10));
                 moverMotores(255, -255);
-                vTaskDelay(pdMS_TO_TICKS(50));
+                vTaskDelay(pdMS_TO_TICKS(40));
                 moverMotores(255, 255);
-                vTaskDelay(pdMS_TO_TICKS(100));
+                vTaskDelay(pdMS_TO_TICKS(155));
                 moverMotores(-255, 255);
-                vTaskDelay(pdMS_TO_TICKS(90));
+                vTaskDelay(pdMS_TO_TICKS(160));
                 moverMotores(255, 255);
-                vTaskDelay(pdMS_TO_TICKS(50));
-                moverMotores(-255, 255);
-                vTaskDelay(pdMS_TO_TICKS(50));
+                vTaskDelay(pdMS_TO_TICKS(170));
                 moverMotores(0, 0);
-                vTaskDelay(pdMS_TO_TICKS(10));
+                vTaskDelay(pdMS_TO_TICKS(15));
             }
 
+            // ======================= || CONTROLO DO SERVO MANUAL || =======================
             else if (PS4.Down() > 0)
             {
-                moverMotores(0, 0);
-                vTaskDelay(pdMS_TO_TICKS(50));
+                if (estadoServoFechado)
+                {
+                    servoLaminas.write(0); // Se está fechado, abre para 0º
+                    estadoServoFechado = false;
+                }
+                else
+                {
+                    servoLaminas.write(95); // Se está aberto, fecha para 95º
+                    estadoServoFechado = true;
+                }
+                moverMotores(0, 0);             // Opcional: manter o robô parado ao alternar
+                vTaskDelay(pdMS_TO_TICKS(300)); // Debounce essencial para não "piscar" o servo
                 continue;
             }
 

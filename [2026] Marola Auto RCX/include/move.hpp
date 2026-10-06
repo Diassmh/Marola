@@ -133,9 +133,9 @@ void buscaTcholas()
     switch (estadoAtual)
     {
     case FUGA_LINHA_RE:
-        moverMotores(-255, -255);
-        // Dá ré por 200ms
-        if (millis() - tempoManobraLinha >= 200)
+        moverMotores(0, 0);
+        // Dá ré por 50ms
+        if (millis() - tempoManobraLinha >= 50)
         {
             tempoManobraLinha = millis(); // Reseta relógio
             estadoAtual = FUGA_LINHA_GIRO;
@@ -153,7 +153,7 @@ void buscaTcholas()
         }
 
         // Tempo do giro (ajuste para ele mirar pro centro do dohyo)
-        if (millis() - tempoManobraLinha >= 150)
+        if (millis() - tempoManobraLinha >= 80)
         {
             tempoManobraLinha = millis();
 

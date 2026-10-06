@@ -61,7 +61,7 @@ void config()
     FastLED.addLeds<WS2812, leds_end, GRB>(leds, 5);
     FastLED.setBrightness(128); // Brilho
 
-    animacaoInicial();
+    // animacaoInicial();
 
     // --- IR ---
     IrReceiver.begin(IR, DISABLE_LED_FEEDBACK, led);
@@ -102,7 +102,7 @@ void loop()
     {
 
         uint8_t brilhoPulsante = beatsin8(25, 50, 250);      // 30,40,120
-        fill_solid(leds, 5, CHSV(160, 255, brilhoPulsante)); // roxo:210 vermelho: 0
+        fill_solid(leds, 5, CHSV(210, 255, brilhoPulsante)); // roxo:210 vermelho: 0
         FastLED.show();
 
         if (IrReceiver.decode())

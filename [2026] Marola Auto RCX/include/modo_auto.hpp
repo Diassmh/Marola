@@ -27,6 +27,12 @@ void TodosLedsVermelhos()
     FastLED.show();
 }
 
+void TodosLedsBrancos()
+{
+    fill_solid(leds, 5, CRGB::White);
+    FastLED.show();
+}
+
 #pragma region Menu Guia
 void mostrarMenu()
 {
@@ -327,13 +333,13 @@ void setupAuto()
     //=============================|| COMEÇO DE LUTA ||================================
     TodosLedsVermelhos();
 
-    servoLaminas.write(180);
+    servoLaminas.write(0);
 
     float multDist = 1.0;
 
     if (Posicao == Perto)
     {
-        multDist = 0.5; // Corta o tempo de avanço pela metade (bate rápido)
+        multDist = 0.7; // Corta o tempo de avanço pela metade (bate rápido)
     }
     else if (Posicao == Medio)
     {
@@ -341,7 +347,7 @@ void setupAuto()
     }
     else if (Posicao == Longe)
     {
-        multDist = 1.6; // Aumenta o tempo em 60% para cruzar o dohyo inteiro
+        multDist = 1.6; // Aumenta o tempo em 50% para cruzar o dohyo inteiro
     }
 
     switch (estrategia)
@@ -367,7 +373,7 @@ void setupAuto()
         moverMotores(228, 228);
         delay(12);
         moverMotores(255, 255);
-        delay(int(90 * multDist)); // Aceleração mantida, só muda a distância final
+        delay(int(200 * multDist)); // Aceleração mantida, só muda a distância final
         break;
 
     case 'F': // Frentão Anti Pescador
@@ -393,7 +399,7 @@ void setupAuto()
             moverMotores(-255, -255);
             delay(int(120 * multDist));
             moverMotores(-255, 255);
-            delay(50); // Giro NÃO muda com a distância
+            delay(30); // Giro NÃO muda com a distância
             moverMotores(255, 255);
             delay(int(160 * multDist));
             moverMotores(0, 0);
@@ -406,7 +412,7 @@ void setupAuto()
             moverMotores(-255, -255);
             delay(int(120 * multDist));
             moverMotores(255, -255);
-            delay(50); // Giro NÃO muda com a distância
+            delay(30); // Giro NÃO muda com a distância
             moverMotores(255, 255);
             delay(int(160 * multDist));
             moverMotores(0, 0);
@@ -422,13 +428,13 @@ void setupAuto()
         if (lado == esquerda)
         {
             moverMotores(-255, 255);
-            delay(60);
+            delay(20);
             moverMotores(255, 255);
             delay(int(120 * multDist)); // Arrancada ajustada
             moverMotores(0, 0);
             delay(10);
             moverMotores(255, -255);
-            delay(40);
+            delay(70);
             moverMotores(0, 0);
             delay(10);
             lado = direita;
@@ -437,13 +443,13 @@ void setupAuto()
         else if (lado == direita)
         {
             moverMotores(255, -255);
-            delay(60);
+            delay(20);
             moverMotores(255, 255);
             delay(int(120 * multDist)); // Arrancada ajustada
             moverMotores(0, 0);
             delay(10);
             moverMotores(-255, 255);
-            delay(40);
+            delay(70);
             moverMotores(0, 0);
             delay(10);
             lado = esquerda;
@@ -457,13 +463,13 @@ void setupAuto()
         if (lado == esquerda)
         {
             moverMotores(-255, 255);
-            delay(60);
+            delay(40);
             moverMotores(255, 255);
             delay(int(170 * multDist)); // Arrancada ajustada
             moverMotores(0, 0);
             delay(10);
             moverMotores(255, -255);
-            delay(50);
+            delay(100);
             moverMotores(255, 255);
             delay(int(50 * multDist)); // Bote final ajustado
             moverMotores(0, 0);
@@ -474,13 +480,13 @@ void setupAuto()
         else if (lado == direita)
         {
             moverMotores(255, -255);
-            delay(60);
+            delay(40);
             moverMotores(255, 255);
             delay(int(170 * multDist)); // Arrancada ajustada
             moverMotores(0, 0);
             delay(10);
             moverMotores(-255, 255);
-            delay(50);
+            delay(100);
             moverMotores(255, 255);
             delay(int(50 * multDist)); // Bote final ajustado
             moverMotores(0, 0);
@@ -489,11 +495,40 @@ void setupAuto()
             break;
         }
 
+    case 'd': // diagonal
+
+        if (lado == esquerda)
+        {
+            moverMotores(-255, 255);
+            delay(70);
+            moverMotores(255, 255);
+            delay(int(150 * multDist));
+            moverMotores(0, 0);
+            delay(10);
+            moverMotores(255, -255);
+            delay(70);
+            lado = direita;
+            break;
+        }
+        else if (lado == direita)
+        {
+            moverMotores(255, -255);
+            delay(70);
+            moverMotores(255, 255);
+            delay(int(150 * multDist));
+            moverMotores(0, 0);
+            delay(10);
+            moverMotores(-255, 255);
+            delay(70);
+            lado = esquerda;
+            break;
+        }
+
     case 'z': // Basico
         SerialBT.print("Basico");
         break;
 
-    case 'e': // desempate
+    case 'e': // Espera
 
         delay(400);
         break;
@@ -504,11 +539,11 @@ void setupAuto()
             moverMotores(-255, 255);
             delay(40);
             moverMotores(255, 255);
-            delay(int(160 * multDist));
+            delay(int(140 * multDist));
             moverMotores(0, 0);
             delay(10);
             moverMotores(255, -255);
-            delay(120);
+            delay(190);
             moverMotores(0, 0);
             delay(10);
             moverMotores(255, 255);
@@ -521,11 +556,11 @@ void setupAuto()
             moverMotores(255, -255);
             delay(40);
             moverMotores(255, 255);
-            delay(int(160 * multDist));
+            delay(int(140 * multDist));
             moverMotores(0, 0);
             delay(10);
             moverMotores(-255, 255);
-            delay(140);
+            delay(190);
             moverMotores(0, 0);
             delay(10);
             moverMotores(255, 255);
@@ -562,34 +597,6 @@ void setupAuto()
             delay(130);
             moverMotores(0, 0);
             delay(10);
-            break;
-        }
-
-    case 'd': // diagonal
-        if (lado == esquerda)
-        {
-            moverMotores(-255, 255);
-            delay(60);
-            moverMotores(255, 255);
-            delay(int(150 * multDist));
-            moverMotores(0, 0);
-            delay(10);
-            moverMotores(255, -255);
-            delay(30);
-            lado = direita;
-            break;
-        }
-        else if (lado == direita)
-        {
-            moverMotores(255, -255);
-            delay(60);
-            moverMotores(255, 255);
-            delay(int(150 * multDist));
-            moverMotores(0, 0);
-            delay(10);
-            moverMotores(-255, 255);
-            delay(30);
-            lado = esquerda;
             break;
         }
 
@@ -655,7 +662,14 @@ void loopAuto()
 
     while (true)
     {
-        buscaTcholas();
+        if (busca == Tchola)
+        {
+            buscaTcholas();
+        }
+        else if (busca == Ofensiva)
+        {
+            buscaOfensiva();
+        }
         vTaskDelay(pdMS_TO_TICKS(5));
     }
 }

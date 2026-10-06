@@ -44,8 +44,8 @@ TaskHandle_t SensorTask; // Avisando o ESP que teremos uma task
 
 #define Motor_Direito_Positivo 16  // 17    fuego 16
 #define Motor_Direito_Negativo 17  // 16    fugego 17
-#define Motor_Esquerdo_Positivo 18 // 18    fuegob 18
-#define Motor_Esquerdo_Negativo 19 // 19   fuego 19
+#define Motor_Esquerdo_Positivo 19 // 18    fuegob 18
+#define Motor_Esquerdo_Negativo 18 // 19   fuego 19
 
 #pragma endregion
 
@@ -54,7 +54,7 @@ TaskHandle_t SensorTask; // Avisando o ESP que teremos uma task
 #pragma region PINOS SERVO
 
 #define SERVOMOTOR_PIN 26 // 26
-#define SERVO_ANGULO_INICIAL 90
+#define SERVO_ANGULO_INICIAL 96
 #define SERVO_FREQ_HZ 50
 #define SERVO_RESOLUTION 16
 #define SERVO_MIN_PULSE_US 544  //  Largura de pulso para 0 graus (µs)
@@ -144,8 +144,8 @@ enum EstadoMarola
 
 Direction lado = esquerda;
 ServoMotor servo = Fechado;
-SelecionaBusca busca = Tchola;
-SelecionaModo modoSelecionado = NaoSelecionado;
+SelecionaBusca busca = Ofensiva;
+SelecionaModo modoSelecionado = ModoAuto;
 Posicionamento Posicao = Medio;
 EstadoMarola estadoAtual = AVANCAR_LENTO;
 
