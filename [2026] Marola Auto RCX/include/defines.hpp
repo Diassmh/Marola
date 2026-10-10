@@ -145,7 +145,7 @@ enum EstadoMarola
 Direction lado = esquerda;
 ServoMotor servo = Fechado;
 SelecionaBusca busca = Ofensiva;
-SelecionaModo modoSelecionado = ModoAuto;
+SelecionaModo modoSelecionado = NaoSelecionado;
 Posicionamento Posicao = Medio;
 EstadoMarola estadoAtual = AVANCAR_LENTO;
 

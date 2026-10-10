@@ -25,7 +25,7 @@ bool primeiroComando = true;    // Flag para abrir o servo no primeiro movimento
 bool estadoServoFechado = true; // Controla se o robô está fechado (95º) ou aberto (0º)
 
 float coefAtenuacao = 1.8; // Atenuacao da velocidade em curvas (deve ser FLOAT)
-float coefReverse = 0.9;   // Coeficiente para balancear a re (deve ser FLOAT)
+float coefReverse = 1.0;   // Coeficiente para balancear a re (deve ser FLOAT)
 float limiteCurva = 200.0; // Velocidade limite em curvas puras (deve ser FLOAT)  120
 
 const char *MAROLA = "30:76:f5:93:b0:30";
