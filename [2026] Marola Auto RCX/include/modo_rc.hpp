@@ -25,10 +25,11 @@ bool primeiroComando = true;    // Flag para abrir o servo no primeiro movimento
 bool estadoServoFechado = true; // Controla se o robô está fechado (95º) ou aberto (0º)
 
 float coefAtenuacao = 1.8; // Atenuacao da velocidade em curvas (deve ser FLOAT)
-float coefReverse = 1.0;   // Coeficiente para balancear a re (deve ser FLOAT)
-float limiteCurva = 200.0; // Velocidade limite em curvas puras (deve ser FLOAT)  120
+float coefReverse = 0.60;   // Coeficiente para balancear a re (deve ser FLOAT)
+float coefFrente = 0.80;
+float limiteCurva = 255.0; // Velocidade limite em curvas puras (deve ser FLOAT)  120
 
-const char *MAROLA = "30:76:f5:93:b0:30";
+const char *MAROLA = "c8:85:41:2c:24:3c";
 const char *TESTE = "c8:85:41:2c:24:3c";
 
 void iniciarTodosAzuis()
@@ -80,7 +81,7 @@ void loopRC()
                 {
                     servoLaminas.write(0);
                     estadoServoFechado = false;
-                    primeiroComando = false;
+                    //primeiroComando = false;
                 }
             }
 
@@ -98,13 +99,13 @@ void loopRC()
 
                 vTaskDelay(pdMS_TO_TICKS(10));
                 moverMotores(-255, 255);
-                vTaskDelay(pdMS_TO_TICKS(100));
+                vTaskDelay(pdMS_TO_TICKS(140));
                 moverMotores(255, 255);
                 vTaskDelay(pdMS_TO_TICKS(200));
                 moverMotores(0, 0);
                 vTaskDelay(pdMS_TO_TICKS(10));
                 moverMotores(255, -255);
-                vTaskDelay(pdMS_TO_TICKS(110));
+                vTaskDelay(pdMS_TO_TICKS(160));
                 moverMotores(255, 255);
                 vTaskDelay(pdMS_TO_TICKS(100));
             }
@@ -120,15 +121,16 @@ void loopRC()
                 moverMotores(0, 0);
                 vTaskDelay(pdMS_TO_TICKS(10));
                 moverMotores(-255, 255);
-                vTaskDelay(pdMS_TO_TICKS(110));
+                vTaskDelay(pdMS_TO_TICKS(160));
                 moverMotores(255, 255);
                 vTaskDelay(pdMS_TO_TICKS(100));
             }
 
             else if (PS4.Left() > 0)
             {
+                vTaskDelay(pdMS_TO_TICKS(10));
                 moverMotores(-255, 255);
-                vTaskDelay(pdMS_TO_TICKS(40));
+                vTaskDelay(pdMS_TO_TICKS(100));
                 moverMotores(255, 255);
                 vTaskDelay(pdMS_TO_TICKS(155));
                 moverMotores(255, -255);
@@ -141,7 +143,7 @@ void loopRC()
             else if (PS4.Right() > 0)
             {
                 moverMotores(255, -255);
-                vTaskDelay(pdMS_TO_TICKS(40));
+                vTaskDelay(pdMS_TO_TICKS(60));
                 moverMotores(255, 255);
                 vTaskDelay(pdMS_TO_TICKS(155));
                 moverMotores(-255, 255);
@@ -162,7 +164,7 @@ void loopRC()
                 }
                 else
                 {
-                    servoLaminas.write(95); // Se está aberto, fecha para 95º
+                    servoLaminas.write(90); // Se está aberto, fecha para 95º
                     estadoServoFechado = true;
                 }
                 moverMotores(0, 0);             // Opcional: manter o robô parado ao alternar
@@ -252,14 +254,14 @@ void loopRC()
                     {
 
                         int velocidade = map(r2, zonaMorta, 255, 0, limiteVelocidade);
-                        velocidadeEsquerda = velocidade;
+                        velocidadeEsquerda = int(coefFrente * velocidade);
                         velocidadeDireita = velocidade;
                     }
                     else
                     { // Gatilho esquerdo (re)
                         int velocidade = map(l2, zonaMorta, 255, 0, limiteVelocidade);
-                        velocidadeEsquerda = -velocidade;
-                        velocidadeDireita = -int(coefReverse * velocidade);
+                        velocidadeEsquerda = -int(coefReverse * velocidade); 
+                        velocidadeDireita =  -velocidade;
                     }
 
                     //===================== || GATILHOS + CURVA || =============================

@@ -48,8 +48,8 @@ void moverMotores(int velEsq, int velDir)
     }
     else if (velDir == 0)
     {
-        analogWrite(Motor_Direito_Positivo, 255); // mudar
-        analogWrite(Motor_Direito_Negativo, 255); // mudar
+        analogWrite(Motor_Direito_Positivo, 20); // Freio
+        analogWrite(Motor_Direito_Negativo, 20); // Freio
     }
 
     // --- ACIONAMENTO MOTOR ESQUERDO ---
